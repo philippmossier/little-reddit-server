@@ -1,45 +1,69 @@
-// import "reflect-metadata";
-import { MikroORM } from "@mikro-orm/core";
+import "reflect-metadata";
 import { __prod__ } from "./constants";
-import microConfig from "./mikro-orm.config";
 import express from "express";
 import { ApolloServer } from "apollo-server-express";
 import { buildSchema } from "type-graphql";
 import { HelloResolver } from "./resolvers/hello";
 import { PostResolver } from "./resolvers/post";
+import cors from "cors";
+import { createConnection } from "typeorm";
 import { Post } from "./entities/Post";
-// import { Post } from "./entities/Post";
 
 const main = async () => {
-  const orm = await MikroORM.init(microConfig);
-  await orm.getMigrator().up();
+  const conn = await createConnection({
+    type: "postgres",
+    database: "lireddit2",
+    username: "postgres",
+    password: "postgres",
+    logging: true,
+    synchronize: true,
+    entities: [Post],
+  });
+  // create a post
+  if (conn) {
+  //   let post = new Post();
+  // post.title = "Me and Bears";
+  // conn.manager
+  //         .save(post)
+  //         .then(post => {
+  //             console.log("post has been saved. post id is", post.id);
+  //         });
+  }
 
   const app = express();
 
+  app.use(
+    cors({
+      origin: "http://localhost:3000",
+      credentials: true,
+    })
+  );
+
+  app.get('/', (_, res )=> {
+    res.send('deine mama')
+  })
+  
 
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
       resolvers: [HelloResolver, PostResolver],
       validate: false,
     }),
-    context: () => ({ orm: orm.em })
+    // context: ({ req, res }) => ({ req, res }),
   });
 
-  apolloServer.applyMiddleware({app});
-  // app.get('/', (_,res)=> {
-  //   res.send('asdasdasdasd')
-  // })
-
-  app.listen(5100, () => {
-    console.log("graphql runs on port 5100/graphql");
+  apolloServer.applyMiddleware({
+    app,
+    cors: false,
   });
-    // const post = orm.em.create(Post, {title: 'my second post'});
-    // await orm.em.persistAndFlush(post);
-    const posts = await orm.em.find(Post, {});
-    console.log('------ALL POSTS------', posts)
+
+
+
+  app.listen(4000, () => {
+    console.log("server started on localhost:4000");
+  });
 };
 
 main().catch((err) => {
   console.error(err);
 });
-
