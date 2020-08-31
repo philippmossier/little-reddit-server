@@ -8,13 +8,16 @@ import { PostResolver } from "./resolvers/post";
 import { createConnection } from "typeorm";
 
 const main = async () => {
-  await createConnection();
-  // // create new record on Post table
+  const connection = await createConnection();
+  connection && console.log('connected to PostgreSQL-DB ')
+    // // ---- create new record on Post table
   // const db_init = await createConnection();
   // const repository = await db_init.getRepository(Post);
   // let post = new Post;
   // post.title = "created without resolver"
   // await repository.save(post)
+
+  // you can use all typeorm methods on your connection like connection.migration etc
 
   const app = express();
   const apolloServer = new ApolloServer({

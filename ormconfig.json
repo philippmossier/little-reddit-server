@@ -7,5 +7,6 @@
     "database": "newreddit",
     "entities": ["dist/entities/*.js"],
     "migrations": ["dist/migrations/*.js"],
-    "synchronize": true
+    "synchronize": true,
+    "logging": true
   }

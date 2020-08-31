@@ -1,9 +1,11 @@
 # started project at 28.8.2020 11:40 PM
 BEFORE START: sudo service postgresql status
 BEFORE START: sudo service postgresql start
-# delete DB create DB
+# delete DB create DB create DB-Tables
 createdb dbname
 dropdb dbname
+INFO: "synchronize": true, => automatically creates the DB tables for you without running 
+      migrations. (set this to false if you manually use migrations to create a table)
 # this project includes follow technologies:
 - React
 - TypeScript
