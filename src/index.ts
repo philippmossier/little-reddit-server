@@ -13,7 +13,7 @@ const main = async () => {
   // const db_init = await createConnection();
   // const repository = await db_init.getRepository(Post);
   // let post = new Post;
-  // post.title = "jajaasd"
+  // post.title = "created without resolver"
   // await repository.save(post)
 
   const app = express();
@@ -28,7 +28,7 @@ const main = async () => {
   apolloServer.applyMiddleware({app});
 
   app.listen(4000, () => {
-    console.log("graphql server started on localhost:4000/graphql");
+    console.log("apollo-graphql server started on localhost:4000/graphql");
   });
 };
 
