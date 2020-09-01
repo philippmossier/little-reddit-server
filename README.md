@@ -48,4 +48,8 @@ npm install express apollo-server-express graphql type-graphql \
 reflect-metadata class-validator 
 npx tsconfig.json (select node)
 
+# setup eslint with prettier (non-react or react, link: https://www.robertcooper.me/using-eslint-and-prettier-in-a-typescript-project)
+npm install eslint @typescript-eslint/parser @typescript-eslint/eslint-plugin --dev
+
+npm install prettier eslint-config-prettier eslint-plugin-prettier --dev
 
