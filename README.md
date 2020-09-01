@@ -17,14 +17,15 @@ INFO: "synchronize": true, => automatically creates the DB tables for you withou
 - Redis
 - Next.js
 - TypeGraphQL
-- TailwindCSS
+- TailwindCSSj
 
 # versions:
 postgresql: 12.4
 node: 14.5.0
 npm: 6.14.5
 
-**video: 39:50**
+**video: 1h:19m**
+https://www.youtube.com/watch?v=I6ypD7qv3Z8&t=19772s
 
 # scripts explanation
 - npm run watch (compiles ts to js into dist folder)
