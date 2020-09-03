@@ -5,6 +5,7 @@ import { buildSchema } from 'type-graphql';
 import { HelloResolver } from './resolvers/hello';
 import { PostResolver } from './resolvers/post';
 import { createConnection } from 'typeorm';
+import { UserResolver } from './resolvers/user';
 
 const main = async () => {
     const connection = await createConnection();
@@ -13,22 +14,21 @@ const main = async () => {
     // const db_init = await createConnection();
     // const repository = await db_init.getRepository(Post);
     // let post = new Post;
-    // post.title = "created without resolver"
+    // post.title = "created without resolver
     // await repository.save(post)
 
     // you can use all typeorm methods on your connection like connection.migration etc
 
     const app = express();
+
     const apolloServer = new ApolloServer({
         schema: await buildSchema({
-            resolvers: [HelloResolver, PostResolver],
+            resolvers: [HelloResolver, PostResolver, UserResolver],
             validate: false,
         }),
         // context: ({ req, res }) => ({ req, res }),
     });
-
     apolloServer.applyMiddleware({ app });
-
     app.listen(4000, () => {
         console.log('apollo-graphql server started on localhost:4000/graphql');
     });
