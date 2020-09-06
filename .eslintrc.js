@@ -13,9 +13,9 @@ module.exports = {
         // Place to specify ESLint rules. Can be used to overwrite rules specified from the extended configs
         // e.g. "@typescript-eslint/explicit-function-return-type": "off",
 
-        // error makes lines red , warning yellow
-        'prettier/prettier': [0],
-        '@typescript-eslint/explicit-module-boundary-types': 'off',
+        // error makes lines red , warning yelloww
+        'prettier/prettier': ['warn'],
+        //'@typescript-eslint/explicit-module-boundary-types': 'off',
         // 'prettier/prettier': ['warn', { endOfLine: 'auto', printWidth: 120 }],
     },
 };

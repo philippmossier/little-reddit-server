@@ -1,35 +1,40 @@
 {
-    // eslint:
-    "eslint.validate": [
-      "javascript",
-      "javascriptreact",
-      "typescript",
-      "typescriptreact"
-    ],
-    "[javascript]": {
-      "editor.formatOnSave": false,
-      "editor.codeActionsOnSave": {
-        "source.fixAll.eslint": true
-      }
+  // eslint/eslint-prettier:
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact",
+  ],
+  "eslint.run": "onSave", // only lints after saving and not during writing (also effects eslint-prettier addons)
+  "[json]": {
+    "editor.formatOnSave": false
+  },
+  "[javascript]": {
+    "editor.formatOnSave": false,
+    "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": true
+    }
+  },
+  "[javascriptreact]": {
+    "editor.formatOnSave": false,
+    "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": true
     },
-    "[javascriptreact]": {
-      "editor.formatOnSave": false,
-      "editor.codeActionsOnSave": {
-        "source.fixAll.eslint": true
-      },
-    },
-    "[typescript]": {
-      "editor.formatOnSave": false,
-      "editor.codeActionsOnSave": {
-        "source.fixAll.eslint": true
-      }
-    },
-    "[typescriptreact]": {
-      "editor.formatOnSave": false,
-      "editor.codeActionsOnSave": {
-        "source.fixAll.eslint": true
-      }
-    },
+    // "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescript]": {
+    "editor.formatOnSave": false,
+    "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": true
+    }
+  },
+  "[typescriptreact]": {
+    "editor.formatOnSave": false,
+    "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": true
+    }
+  },
     // "emmet.triggerExpansionOnTab": true, // maybe needed for tailwind
   }
   

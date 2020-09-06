@@ -1,13 +1,20 @@
-Video 1h:41
 # started project at 28.8.2020 11:40 PM
+
+Video 2h:19
+<https://www.youtube.com/watch?v=I6ypD7qv3Z8&t=19772s>
+
 BEFORE START: sudo service postgresql status
 BEFORE START: sudo service postgresql start
-# delete DB create DB create DB-Tables
+
+## delete DB create DB create DB-Tables
+
 createdb dbname
 dropdb dbname
-INFO: "synchronize": true, => automatically creates the DB tables for you without running 
+INFO: "synchronize": true, => automatically creates the DB tables for you without running
       migrations. (set this to false if you manually use migrations to create a table)
-# this project includes follow technologies:
+
+## this project includes follow technologies
+
 - React
 - TypeScript
 - GraphQL
@@ -20,22 +27,21 @@ INFO: "synchronize": true, => automatically creates the DB tables for you withou
 - TypeGraphQL
 - TailwindCSSj
 
-# versions:
+## versions
+
 postgresql: 12.4
 node: 14.5.0
 npm: 6.14.5
 
-**video: 1h:19m**
-https://www.youtube.com/watch?v=I6ypD7qv3Z8&t=19772s
+## scripts explanation
 
-# scripts explanation
 - npm run watch (compiles ts to js into dist folder)
 - node dist/index.js
 - start is faster as start2
 - "tsc -w" recompiles our typescript code everytime we change a typescript file
 - "nodemon dist/index.js" re-execute the js code that changes in the dist folder
 
-# shell history 
+## shell history
 
 mkdir gh/newreddit && cd gh/newreddit
 code .
@@ -46,10 +52,11 @@ nvm ls
 npm -v
 npm install -D @types/node typescript ts-node nodemon pg @types/express (alternative ts-node-dev instead of ts-node)
 npm install express apollo-server-express graphql type-graphql \
-reflect-metadata class-validator 
+reflect-metadata class-validator
 npx tsconfig.json (select node)
 
-# setup eslint with prettier (non-react or react, link: https://www.robertcooper.me/using-eslint-and-prettier-in-a-typescript-project)
+## setup eslint with prettier (non-react or react, link: <https://www.robertcooper.me/using-eslint-and-prettier-in-a-typescript-project>)
+
 npm install eslint @typescript-eslint/parser @typescript-eslint/eslint-plugin --dev
 
 npm install prettier eslint-config-prettier eslint-plugin-prettier --dev
@@ -59,4 +66,4 @@ video 1:41
 npm install redis connect-redis express-session (alternative ioredis instead of redis)
 npm install -D @types/redis @types/express-session @type/connect-redis
 
-# if redis cookie called 'qid' dont show up under devtools>application>cookies you need to go to browser localhost:4000/graphql > settings > set "request.credentials": "omit",  to "request.credentials": "include",
+## if redis cookie called 'qid' dont show up under devtools>application>cookies you need to go to browser localhost:4000/graphql > settings > set "request.credentials": "omit",  to "request.credentials": "include"

@@ -32,21 +32,19 @@ class UserResponse {
 
 @Resolver()
 export class UserResolver {
-    @Query(() => User, {nullable:true})
-    me(@Ctx() { req}: MyContext) {
+    @Query(() => User, { nullable: true })
+    me(@Ctx() { req }: MyContext): Promise<User | undefined> | null {
+        console.log('session:', req.session);
+
+        // you are not logged in
         if (!req.session.userId) {
-            return null
+            return null;
         }
         return User.findOne(req.session.userId);
     }
-    
-
 
     @Mutation(() => UserResponse)
-    async register(
-        @Arg('options') options: UsernamePasswordInput,
-        @Ctx() { req }: MyContext
-    ): Promise<UserResponse> {
+    async register(@Arg('options') options: UsernamePasswordInput, @Ctx() { req }: MyContext): Promise<UserResponse> {
         if (options.username.length <= 2) {
             return {
                 errors: [
@@ -90,7 +88,7 @@ export class UserResolver {
         // store user id session after register (not only after login)
         // this will set a cookie on the user
         // keep them logged in
-        req.session.userId = user.id
+        req.session.userId = user.id;
 
         return { user };
     }
