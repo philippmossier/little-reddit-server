@@ -1,3 +1,4 @@
+Video 1h:41
 # started project at 28.8.2020 11:40 PM
 BEFORE START: sudo service postgresql status
 BEFORE START: sudo service postgresql start
@@ -43,7 +44,7 @@ nvm install 14.5.0
 nvm alias default 14.5
 nvm ls
 npm -v
-npm install -D @types/node typescript ts-node nodemon pg @types/express
+npm install -D @types/node typescript ts-node nodemon pg @types/express (alternative ts-node-dev instead of ts-node)
 npm install express apollo-server-express graphql type-graphql \
 reflect-metadata class-validator 
 npx tsconfig.json (select node)
@@ -53,3 +54,9 @@ npm install eslint @typescript-eslint/parser @typescript-eslint/eslint-plugin --
 
 npm install prettier eslint-config-prettier eslint-plugin-prettier --dev
 
+video 1:41
+
+npm install redis connect-redis express-session (alternative ioredis instead of redis)
+npm install -D @types/redis @types/express-session @type/connect-redis
+
+# if redis cookie called 'qid' dont show up under devtools>application>cookies you need to go to browser localhost:4000/graphql > settings > set "request.credentials": "omit",  to "request.credentials": "include",
