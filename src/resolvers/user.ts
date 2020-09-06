@@ -43,7 +43,10 @@ export class UserResolver {
 
 
     @Mutation(() => UserResponse)
-    async register(@Arg('options') options: UsernamePasswordInput): Promise<UserResponse> {
+    async register(
+        @Arg('options') options: UsernamePasswordInput,
+        @Ctx() { req }: MyContext
+    ): Promise<UserResponse> {
         if (options.username.length <= 2) {
             return {
                 errors: [
@@ -83,6 +86,12 @@ export class UserResolver {
                 };
             }
         }
+
+        // store user id session after register (not only after login)
+        // this will set a cookie on the user
+        // keep them logged in
+        req.session.userId = user.id
+
         return { user };
     }
 
