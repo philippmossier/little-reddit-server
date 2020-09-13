@@ -2,6 +2,7 @@ import { Resolver, InputType, Field, Mutation, Arg, ObjectType, Ctx, Query } fro
 import argon2 from 'argon2';
 import { User } from '../entities/User';
 import { MyContext } from 'src/types';
+import { getConnection } from 'typeorm';
 
 @InputType()
 class UsernamePasswordInput {
@@ -68,6 +69,36 @@ export class UserResolver {
         }
         const hashedPassword = await argon2.hash(options.password);
         const user = User.create({ username: options.username, password: hashedPassword });
+
+        // // queryBuilder Version:
+        // let user;
+        // try {
+        //     // User.create({}).save()
+        //     const result = await getConnection()
+        //       .createQueryBuilder()
+        //       .insert()
+        //       .into(User)
+        //       .values({
+        //         username: options.username,
+        //         password: hashedPassword,
+        //       })
+        //       .returning("*")
+        //       .execute();
+        //     user = result.raw[0];
+        //   } catch (err) {
+        //     //|| err.detail.includes("already exists")) {
+        //     // duplicate username error
+        //     if (err.code === "23505") {
+        //       return {
+        //         errors: [
+        //           {
+        //             field: "username",
+        //             message: "username already taken",
+        //           },
+        //         ],
+        //       };
+        //     }
+        //   }
 
         try {
             await user.save();
