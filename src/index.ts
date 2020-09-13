@@ -10,6 +10,7 @@ import redis from 'redis';
 import session from 'express-session';
 import connectRedis from 'connect-redis';
 import { __prod__ } from './constants';
+import cors from 'cors';
 
 const main = async () => {
     const connection = await createConnection();
@@ -26,7 +27,12 @@ const main = async () => {
     const app = express();
     const RedisStore = connectRedis(session);
     const redisClient = redis.createClient();
-
+    app.use(
+        cors({
+            origin: 'http://localhost:3000',
+            credentials: true,
+        }),
+    );
     app.use(
         session({
             name: 'qid', // custom cookie name added (visible in devtools>application>cookies)
@@ -53,7 +59,7 @@ const main = async () => {
         }),
         context: ({ req, res }) => ({ req, res, redis }),
     });
-    apolloServer.applyMiddleware({ app });
+    apolloServer.applyMiddleware({ app, cors: false });
     app.listen(4000, () => {
         console.log('apollo-graphql server started on localhost:4000/graphql');
     });

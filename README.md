@@ -1,10 +1,29 @@
 # started project at 28.8.2020 11:40 PM
 
-Video 2h:19
+Video 2h:45
 <https://www.youtube.com/watch?v=I6ypD7qv3Z8&t=19772s>
 
-BEFORE START: sudo service postgresql status
-BEFORE START: sudo service postgresql start
+BEFORE START:
+tab1:
+sudo service postgresql status
+sudo service postgresql start
+
+tab2:
+redis-server
+redis-cli ping
+
+tab3:
+npm run dev
+
+SQL:
+psql -d newreddit -U phil
+SELECT * FROM post;
+SELECT * FROM "user"; (user needs quotes, maybe because of conflict with reserved keyword)
+DELETE FROM "user" WHERE username='eeeeeeee'; (singleQuoteHere)
+DELETE FROM "user" WHERE username!='Philipp'; (deletes every user except me)
+\d (list all tables)
+\l (list all databases)
+\du (list all users)
 
 ## delete DB create DB create DB-Tables
 
@@ -54,6 +73,8 @@ npm install -D @types/node typescript ts-node nodemon pg @types/express (alterna
 npm install express apollo-server-express graphql type-graphql \
 reflect-metadata class-validator
 npx tsconfig.json (select node)
+npm install cors
+npm install -D @types/cors
 
 ## setup eslint with prettier (non-react or react, link: <https://www.robertcooper.me/using-eslint-and-prettier-in-a-typescript-project>)
 

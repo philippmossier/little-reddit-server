@@ -6,6 +6,9 @@
     "typescript",
     "typescriptreact",
   ],
+  "markdownlint.ignore": [
+    "README.md",
+],
   "eslint.run": "onSave", // only lints after saving and not during writing (also effects eslint-prettier addons)
   "[json]": {
     "editor.formatOnSave": false
