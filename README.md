@@ -4,15 +4,15 @@ Video 2h:45
 <https://www.youtube.com/watch?v=I6ypD7qv3Z8&t=19772s>
 
 BEFORE START:
-tab1:
+
 sudo service postgresql status
 sudo service postgresql start
 
-tab2:
+tab1:
 redis-server
 redis-cli ping
 
-tab3:
+tab2:
 npm run dev
 
 SQL:
@@ -24,7 +24,7 @@ DELETE FROM "user" WHERE username!='Philipp'; (deletes every user except me)
 \d (list all tables)
 \l (list all databases)
 \du (list all users)
-
+`
 ## delete DB create DB create DB-Tables
 
 createdb dbname
@@ -71,7 +71,8 @@ nvm ls
 npm -v
 npm install -D @types/node typescript ts-node nodemon pg @types/express (alternative ts-node-dev instead of ts-node)
 npm install express apollo-server-express graphql type-graphql \
-reflect-metadata class-validator
+reflect-metadata
+npm install class-validator (only needed if tsconfig>skipLipCheck = false)
 npx tsconfig.json (select node)
 npm install cors
 npm install -D @types/cors
