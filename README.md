@@ -76,6 +76,8 @@ npm install class-validator (only needed if tsconfig>skipLipCheck = false)
 npx tsconfig.json (select node)
 npm install cors
 npm install -D @types/cors
+npm install nodemailer
+npm install -D @types/nodemailer
 
 ## setup eslint with prettier (non-react or react, link: <https://www.robertcooper.me/using-eslint-and-prettier-in-a-typescript-project>)
 

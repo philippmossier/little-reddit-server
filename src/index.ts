@@ -13,6 +13,7 @@ import { COOKIE_NAME, __prod__ } from './constants';
 import cors from 'cors';
 
 const main = async () => {
+    // sendEmail('bob@bob.com', 'hello there');
     const connection = await createConnection();
     connection && console.log('connected to PostgreSQL-DB ');
     // // ---- create new record on Post table
