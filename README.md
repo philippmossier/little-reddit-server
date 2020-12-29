@@ -1,6 +1,11 @@
 # started project at 28.8.2020 11:40 PM
+TODOS: 
+- tscompiler cant handle migration so i comment the migration out after migration is done
+- register and login works but after hardrefresh logined user gets logged out
 
-Video 2h:45
+Video 4:35:34
+
+
 <https://www.youtube.com/watch?v=I6ypD7qv3Z8&t=19772s>
 
 BEFORE START:
@@ -15,8 +20,10 @@ redis-cli ping
 tab2:
 npm run dev
 
-SQL:
-psql -d newreddit -U phil
+
+PSQL:
+```psql
+sql -d newreddit -U phil
 SELECT * FROM post;
 SELECT * FROM "user"; (user needs quotes, maybe because of conflict with reserved keyword)
 DELETE FROM "user" WHERE username='eeeeeeee'; (singleQuoteHere)
@@ -24,13 +31,33 @@ DELETE FROM "user" WHERE username!='Philipp'; (deletes every user except me)
 \d (list all tables)
 \l (list all databases)
 \du (list all users)
-`
+```
+
+Note: we can also view data on pgadmin4(newreddit)
+
 ## delete DB create DB create DB-Tables
 
+```bash
 createdb dbname
 dropdb dbname
+```
+
+```psql
+CREATE DATABASE [databasename]; or create database littlereddit;
+DROP DATABASE littlereddit;   or drop database littlereddit;
+```
+
 INFO: "synchronize": true, => automatically creates the DB tables for you without running
       migrations. (set this to false if you manually use migrations to create a table)
+
+
+## typorm migrations
+
+<!-- npm run typeorm migration:create -- -n UserMigration -->
+npm run typeorm migration:generate -- -n UserMigration2
+npm run typeorm migration:run 
+
+TODO: tscompiler cant handle migration so i comment the migration out after migration is done
 
 ## this project includes follow technologies
 
@@ -85,9 +112,14 @@ npm install eslint @typescript-eslint/parser @typescript-eslint/eslint-plugin --
 
 npm install prettier eslint-config-prettier eslint-plugin-prettier --dev
 
-video 1:41
-
 npm install redis connect-redis express-session (alternative ioredis instead of redis)
 npm install -D @types/redis @types/express-session @type/connect-redis
 
 ## if redis cookie called 'qid' dont show up under devtools>application>cookies you need to go to browser localhost:4000/graphql > settings > set "request.credentials": "omit",  to "request.credentials": "include"
+
+
+
+# updated pckgs
+
+
+none yet
