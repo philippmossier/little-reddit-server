@@ -1,6 +1,5 @@
 # started project at 28.8.2020 11:40 PM
 TODOS: 
-- tscompiler cant handle migration so i comment the migration out after migration is done
 - register and login works but after hardrefresh logined user gets logged out
 
 Video 4:35:34
@@ -54,10 +53,13 @@ INFO: "synchronize": true, => automatically creates the DB tables for you withou
 ## typorm migrations
 
 <!-- npm run typeorm migration:create -- -n UserMigration -->
+- generates a new migrations, depending on the current entities (only if changed since the last migration run):
 npm run typeorm migration:generate -- -n UserMigration2
-npm run typeorm migration:run 
+- runs the last generated migration:
+npm run typeorm migration:run
+- reverts the last migration (newest timestamp):
+npm run typeorm migration:revert 
 
-TODO: tscompiler cant handle migration so i comment the migration out after migration is done
 
 ## this project includes follow technologies
 

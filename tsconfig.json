@@ -29,7 +29,9 @@
     "baseUrl": "."
   },
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "migrations/*.ts",
+    "migrationsbak/*.ts"
   ],
   "include": [
     "./src/**/*.tsx",
