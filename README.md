@@ -107,6 +107,9 @@ npm install cors
 npm install -D @types/cors
 npm install nodemailer
 npm install -D @types/nodemailer
+npm install uuid ioredis
+npm install -D @types/uuid @types/ioredis
+npm uninstall redis 
 
 ## setup eslint with prettier (non-react or react, link: <https://www.robertcooper.me/using-eslint-and-prettier-in-a-typescript-project>)
 

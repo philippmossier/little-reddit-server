@@ -1,8 +1,8 @@
 import { Request, Response } from 'express';
-import { RedisClient } from 'redis';
+import { Redis } from 'ioredis';
 
 export type MyContext = {
     req: Request & { session: Express.Session };
-    redis: RedisClient;
+    redis: Redis;
     res: Response;
 };
