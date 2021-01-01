@@ -36,6 +36,66 @@ class UserResponse {
 
 @Resolver(User)
 export class UserResolver {
+    @Mutation(() => UserResponse)
+    async changePassword(
+        @Arg('token') token: string,
+        @Arg('newPassword') newPassword: string,
+        @Ctx() { redis, req }: MyContext,
+    ): Promise<UserResponse> {
+        if (newPassword.length <= 2) {
+            return {
+                errors: [
+                    {
+                        field: 'newPassword',
+                        message: 'length must be greater than 2',
+                    },
+                ],
+            };
+        }
+
+        const key = FORGET_PASSWORD_PREFIX + token;
+        const userId = await redis.get(key);
+        if (!userId) {
+            return {
+                errors: [
+                    {
+                        field: 'token',
+                        message: 'token expired',
+                    },
+                ],
+            };
+        }
+        // User sended the right token, we know who the user is (we got the userId with the token)
+        // now we can update the user
+        const userIdNum = parseInt(userId);
+        const user = await User.findOne(userIdNum);
+
+        // rare case when user maybe gots deleted during pw change process
+        if (!user) {
+            return {
+                errors: [
+                    {
+                        field: 'token',
+                        message: 'user no longer exists',
+                    },
+                ],
+            };
+        }
+        await User.update(
+            { id: userIdNum },
+            {
+                password: await argon2.hash(newPassword),
+            },
+        );
+        // delete token (when user uses link again, we get an expired error message in the frontend)
+        await redis.del(key);
+
+        // log in user after change password
+        req.session.userId = user.id;
+
+        return { user };
+    }
+
     @Mutation(() => Boolean)
     async forgotPassword(
         @Arg('email') email: string,

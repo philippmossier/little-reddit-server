@@ -2,7 +2,12 @@
 TODOS: 
 - register and login works but after hardrefresh logined user gets logged out
 
-Video 4:35:34
+Video 4:46:54
+
+## Workflow:
+to be done
+
+---
 
 
 <https://www.youtube.com/watch?v=I6ypD7qv3Z8&t=19772s>
