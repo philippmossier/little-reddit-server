@@ -1,16 +1,42 @@
-# started project at 28.8.2020 11:40 PM
-TODOS: 
-- register and login works but after hardrefresh logined user gets logged out
+## Workflow 💻
 
-Video 4:46:54
+### Backend: 
+**Step 1**
+Add a new Entity and decorate them with type-graphql and typeorm to tell PostgreSQL how
+the new table looks like.
+Files need to be Uppercase like `User.tsx`.
 
-## Workflow:
-to be done
+**Step 2**
+Add Resolver to make actions on an Entity (e.g. actions, validation, authentification)
+Resolvers are written in lowercase like `user.tsx`, and need the same name as the entity they are assigned to.
+
+💡 Some basic decorator and types whe use:
+- Resolvers: query, mutation
+- Types: InputType and ObjectType
+
+🕮 InputTypes are used for inputs on forms etc.
+🕮 ObjectTypes are used for describing the Response Object of a Response etc.
+
+**Step 3**
+Run Mutations with typeorm when one of your Entity needs a change (or revert a migration)
+
+🕮 For breaking changes for example adding a required field to an existing entity, we need  to wipe out the database table or make the field nullable (optional)
 
 ---
 
+### Frontend: 
 
-<https://www.youtube.com/watch?v=I6ypD7qv3Z8&t=19772s>
+**Step 1**
+Add graphql mutations, queries depending on the new Resolver.
+
+**Step 2** 
+run `npm run gen` to autogenerate types from the backend schema.
+
+This generates types from the schema defined on our server (all entities, resolvers)
+On Top of that we can add our own types to the schema in the graphQL folder on the client (fragments, mutations, querys, urql-mutation-hooks)
+Urql mutation hooks are based on our schema types and so we dont need to write our own hooks to update our component state.
+
+## How to startup:
 
 BEFORE START:
 
@@ -24,10 +50,9 @@ redis-cli ping
 tab2:
 npm run dev
 
-
-PSQL:
+**PSQL**
 ```psql
-sql -d newreddit -U phil
+sql -d littlereddit -U phil
 SELECT * FROM post;
 SELECT * FROM "user"; (user needs quotes, maybe because of conflict with reserved keyword)
 DELETE FROM "user" WHERE username='eeeeeeee'; (singleQuoteHere)
@@ -36,10 +61,9 @@ DELETE FROM "user" WHERE username!='Philipp'; (deletes every user except me)
 \l (list all databases)
 \du (list all users)
 ```
+🕮 We can also view data on pgadmin4(littlereddit)
 
-Note: we can also view data on pgadmin4(newreddit)
-
-## delete DB create DB create DB-Tables
+**delete DB create DB create DB-Tables with bash or psql**
 
 ```bash
 createdb dbname
@@ -54,6 +78,10 @@ DROP DATABASE littlereddit;   or drop database littlereddit;
 INFO: "synchronize": true, => automatically creates the DB tables for you without running
       migrations. (set this to false if you manually use migrations to create a table)
 
+### started project at 28.8.2020 11:40 PM
+**TODOS:** 
+- register and login works but after hardrefresh logined user gets logged out
+
 
 ## typorm migrations
 
@@ -65,6 +93,15 @@ npm run typeorm migration:run
 - reverts the last migration (newest timestamp):
 npm run typeorm migration:revert 
 
+### Graphql Vscode Extension
+To get intellisense depending on your graphql schema 
+Schema can be found on your graphql endpoint for example: http://localhost:4000/graphql
+1. install vscode extension locally
+- name in vscode extension store: graphql.vscode-graphql
+
+### Tutorial process
+Video Tutorial 5h13
+https://www.youtube.com/watch?v=I6ypD7qv3Z8&t=16577s
 
 ## this project includes follow technologies
 
