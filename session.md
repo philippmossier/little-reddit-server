@@ -27,6 +27,6 @@ key looks something like this and maps to our userId object
 5; make a request to redis
 `sess:aasdlhakjhadsfsdf` -> `{ userId: 1}`
 
-Now the session is stored on 
+Now the session is stored on
 
 req.sesion = { userId: 1 }

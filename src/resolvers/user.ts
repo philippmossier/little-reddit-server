@@ -101,9 +101,11 @@ export class UserResolver {
         @Arg('email') email: string,
         @Ctx() { redis }: MyContext,
     ) {
+
         const user = await User.findOne({ where: { email } });
-        if (!user) {
+       if (!user) {
             // the email is not in the db
+            console.log('No user found with this email')
             return true;
         }
 
@@ -114,11 +116,11 @@ export class UserResolver {
             'ex',
             1000 * 60 * 60 * 24 * 3,
         ); // 3days
+
         await sendEmail(
             email,
             `<a href="http://localhost:3000/change-password/${token}">reset password</a>`,
         );
-
         return true;
     }
 
@@ -180,7 +182,7 @@ export class UserResolver {
                 .insert()
                 .into(User)
                 .values({
-                    email: options.username,
+                    email: options.email,
                     username: options.username,
                     password: hashedPassword,
                 })

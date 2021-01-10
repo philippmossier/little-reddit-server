@@ -37,6 +37,8 @@ On Top of that we can add our own types to the schema in the graphQL folder on t
 Urql mutation hooks are based on our schema types and so we dont need to write our own hooks to update our component state.
 
 ## How to startup:
+Need to config your postgreSQL for the fist time ?
+https://stackoverflow.com/questions/1471571/how-to-configure-postgresql-for-the-first-time
 
 BEFORE START:
 
@@ -84,11 +86,12 @@ INFO: "synchronize": true, => automatically creates the DB tables for you withou
 
 
 ## typorm migrations
-
-<!-- npm run typeorm migration:create -- -n UserMigration -->
+https://github.com/typeorm/typeorm/blob/master/docs/migrations.md
+- add an empty migration where you can write SQL manually and run your self created migrations afterwards
+npm run typeorm migration:create -- -n myCustomMigration
 - generates a new migrations, depending on the current entities (only if changed since the last migration run):
 npm run typeorm migration:generate -- -n UserMigration2
-- runs the last generated migration:
+- runs all missing migration (mostly the last one with the newest timestamp):
 npm run typeorm migration:run
 - reverts the last migration (newest timestamp):
 npm run typeorm migration:revert 
