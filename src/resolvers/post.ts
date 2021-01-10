@@ -1,5 +1,22 @@
-import { Resolver, Query, Arg, Mutation } from 'type-graphql';
+import { MyContext } from 'src/types';
+import {
+    Resolver,
+    Query,
+    Arg,
+    Mutation,
+    InputType,
+    Field,
+    Ctx,
+} from 'type-graphql';
 import { Post } from '../entities/Post';
+
+@InputType()
+class PostInput {
+    @Field()
+    title: string;
+    @Field()
+    text: string;
+}
 
 @Resolver()
 export class PostResolver {
@@ -14,9 +31,18 @@ export class PostResolver {
     }
 
     @Mutation(() => Post)
-    async createPost(@Arg('title') title: string): Promise<Post> {
-        // uses 2 sql queries (1 to select 1 to insert) not ideal but this is easier
-        return Post.create({ title }).save();
+    async createPost(
+        @Arg('input') input: PostInput,
+        @Ctx() { req }: MyContext,
+    ): Promise<Post> {
+        // FIXED with latest typeorm update: uses 2 sql queries (1 to select 1 to insert) not ideal but this is easier
+        if (!req.session.userId) {
+            throw new Error('not authenticated');
+        }
+        return Post.create({
+            ...input,
+            creatorId: req.session.userId,
+        }).save();
     }
 
     @Mutation(() => Post, { nullable: true })
@@ -27,7 +53,7 @@ export class PostResolver {
         })
         title: string,
     ): Promise<Post | null> {
-        // 2 sql Version (single sql version comes later)
+        // FIXED with latest typeorm update: 2 sql Version (single sql version comes later)
         const post = await Post.findOne(id);
         if (!post) {
             return null;

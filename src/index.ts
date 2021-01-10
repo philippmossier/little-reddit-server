@@ -16,6 +16,8 @@ const main = async () => {
     // sendEmail('bob@bob.com', 'hello there');
     const connection = await createConnection();
     connection && console.log('connected to PostgreSQL-DB ');
+    // await Post.delete({}); // deletes all items from post table
+
     // // ---- create new record on Post table
     // const db_init = await createConnection();
     // const repository = await db_init.getRepository(Post);

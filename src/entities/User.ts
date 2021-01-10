@@ -6,7 +6,9 @@ import {
     CreateDateColumn,
     UpdateDateColumn,
     BaseEntity,
+    OneToMany,
 } from 'typeorm';
+import { Post } from './Post';
 
 @ObjectType()
 @Entity()
@@ -15,14 +17,6 @@ export class User extends BaseEntity {
     @PrimaryGeneratedColumn()
     id!: number;
 
-    @Field(() => String)
-    @CreateDateColumn()
-    createdAt: Date;
-
-    @Field(() => String)
-    @UpdateDateColumn()
-    updatedAt: Date;
-
     @Field()
     @Column({ unique: true })
     username!: string;
@@ -30,8 +24,19 @@ export class User extends BaseEntity {
     @Column({ type: 'text' })
     password!: string;
 
-    @Column({ type: 'text', unique: true, nullable: true })
+    @Column({ type: 'text', unique: true })
     email!: string;
+
+    @OneToMany(() => Post, (post) => post.creator)
+    posts: Post[];
+
+    @Field(() => String)
+    @CreateDateColumn()
+    createdAt: Date;
+
+    @Field(() => String)
+    @UpdateDateColumn()
+    updatedAt: Date;
 }
-// Typeorm transforms string automatically into type: 'text', 
+// Typeorm transforms string automatically into type: 'text',
 // so you do not need to explicit add `@Column({ type: 'text' })`
