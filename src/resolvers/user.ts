@@ -101,11 +101,11 @@ export class UserResolver {
         @Arg('email') email: string,
         @Ctx() { redis }: MyContext,
     ) {
-
+        // if we search by a column whats not the primary key, we have to use where
         const user = await User.findOne({ where: { email } });
-       if (!user) {
+        if (!user) {
             // the email is not in the db
-            console.log('No user found with this email')
+            console.log('No user found with this email');
             return true;
         }
 
@@ -146,7 +146,7 @@ export class UserResolver {
         }
         const hashedPassword = await argon2.hash(options.password);
 
-        // ------------------ WITHOUT queryBuilder Version: -------------------
+        // ------------------ WITHOUT queryBuilder Version (BaseEntity Version): -------------------
         // const user = User.create({
         //     username: options.username,
         //     email: options.email,
@@ -171,12 +171,28 @@ export class UserResolver {
         //     }
         // }
 
+        // EntityManager Version (takes 2 Arguments instead of 1)
+        // the same as above but longer, without extending BaseEntity:
+        // getManager().create(User, {
+        //     username: options.username,
+        //     email: options.email,
+        //     password: hashedPassword
+        // }).save()
+
+        // Repository Version:
+        // Using repository (same as Entitymanager but its operations are limited to a concrete entity.)
+        // getRepository(User).create({ // you can also get it via getConnection().getRepository() or getManager().getRepository()
+        //     username: options.username,
+        //     email: options.email,
+        //     password: hashedPassword
+        // }).save()
+
         // ---------------- WITHOUT queryBuilder Version end ------------------
 
         // --------------------- queryBuilder Version: ------------------------
+        // This Version feels more like SQL
         let user;
         try {
-            // User.create({}).save()
             const result = await getConnection()
                 .createQueryBuilder()
                 .insert()
@@ -188,6 +204,7 @@ export class UserResolver {
                 })
                 .returning('*')
                 .execute();
+            console.log('result: ', result);
             user = result.raw[0];
         } catch (err) {
             //|| err.detail.includes("already exists")) {

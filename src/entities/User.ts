@@ -33,3 +33,5 @@ export class User extends BaseEntity {
     @Column({ type: 'text', unique: true, nullable: true })
     email!: string;
 }
+// Typeorm transforms string automatically into type: 'text', 
+// so you do not need to explicit add `@Column({ type: 'text' })`
