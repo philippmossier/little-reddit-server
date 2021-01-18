@@ -103,7 +103,7 @@ Schema can be found on your graphql endpoint for example: http://localhost:4000/
 - name in vscode extension store: graphql.vscode-graphql
 
 ### Tutorial process
-Video Tutorial 5h13
+Video Tutorial 6h:00
 https://www.youtube.com/watch?v=I6ypD7qv3Z8&t=16577s
 
 ## this project includes follow technologies

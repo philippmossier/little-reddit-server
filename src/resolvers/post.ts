@@ -1,4 +1,5 @@
-import { MyContext } from 'src/types';
+import { isAuth } from '../middlewares/isAuth';
+import { MyContext } from '../types';
 import {
     Resolver,
     Query,
@@ -7,6 +8,7 @@ import {
     InputType,
     Field,
     Ctx,
+    UseMiddleware,
 } from 'type-graphql';
 import { Post } from '../entities/Post';
 
@@ -31,17 +33,15 @@ export class PostResolver {
     }
 
     @Mutation(() => Post)
+    @UseMiddleware(isAuth)
     async createPost(
         @Arg('input') input: PostInput,
         @Ctx() { req }: MyContext,
     ): Promise<Post> {
         // FIXED with latest typeorm update: uses 2 sql queries (1 to select 1 to insert) not ideal but this is easier
-        if (!req.session.userId) {
-            throw new Error('not authenticated');
-        }
         return Post.create({
             ...input,
-            creatorId: req.session.userId,
+            creatorId: req.session.userId, // We know who the user is based on their session so we pass their id
         }).save();
     }
 
