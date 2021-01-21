@@ -87,12 +87,23 @@ INFO: "synchronize": true, => automatically creates the DB tables for you withou
 
 ## typorm migrations
 https://github.com/typeorm/typeorm/blob/master/docs/migrations.md
+
 - add an empty migration where you can write SQL manually and run your self created migrations afterwards
 npm run typeorm migration:create -- -n myCustomMigration
+or npx typeorm migration:create -n DummyPosts
+
+Run your custom migration with:
+```index.ts
+    // run migrations:
+    await connection.runMigrations();
+```
+
 - generates a new migrations, depending on the current entities (only if changed since the last migration run):
 npm run typeorm migration:generate -- -n UserMigration2
+
 - runs all missing migration (mostly the last one with the newest timestamp):
 npm run typeorm migration:run
+
 - reverts the last migration (newest timestamp):
 npm run typeorm migration:revert 
 

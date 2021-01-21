@@ -27,6 +27,9 @@ const main = async () => {
 
     // you can use all typeorm methods on your connection like connection.migration etc
 
+    // // run migrations:
+    // await connection.runMigrations();
+
     const app = express();
     const RedisStore = connectRedis(session);
     const redis = new Redis();
