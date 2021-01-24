@@ -65,6 +65,16 @@ DELETE FROM "user" WHERE username!='Philipp'; (deletes every user except me)
 ```
 🕮 We can also view data on pgadmin4(littlereddit)
 
+🕮 Migration and DB-Table Actions can also  be run in index.ts with:
+
+```typescript
+    // run migrations:
+    await connection.runMigrations();
+
+    // deletes all records of a specific table:
+    await Post.delete({}); // same as sql: DELETE FROM post;
+```
+
 **delete DB create DB create DB-Tables with bash or psql**
 
 ```bash

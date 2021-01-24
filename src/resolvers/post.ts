@@ -10,6 +10,9 @@ import {
     Ctx,
     UseMiddleware,
     Int,
+    FieldResolver,
+    Root,
+    ObjectType,
 } from 'type-graphql';
 import { Post } from '../entities/Post';
 import { getConnection } from 'typeorm';
@@ -22,26 +25,48 @@ class PostInput {
     text: string;
 }
 
-@Resolver()
+@ObjectType()
+class PaginatedPosts {
+    @Field(() => [Post])
+    posts: Post[];
+    @Field()
+    hasMore: boolean;
+}
+
+@Resolver(Post)
 export class PostResolver {
-    @Query(() => [Post])
+    @FieldResolver(() => String)
+    textSnippet(@Root() post: Post) {
+        return post.text.slice(0, 50);
+    }
+
+    @Query(() => PaginatedPosts)
     async posts(
         @Arg('limit', () => Int) limit: number,
         @Arg('cursor', () => String, { nullable: true }) cursor: string | null,
-    ): Promise<Post[]> {
+    ): Promise<PaginatedPosts> {
+        // pagination "load more button" logic: (Load more button is only visible if there are unfetched posts in the database)
+        // user requests 20 posts but we fetch 21, so we always know if there are more posts which the user has not fetched yet
         const realLimit = Math.min(50, limit);
+        const realLimitPlusOne = realLimit + 1;
         // take is the same as limit but less error-prone in complex queries, source: https://typeorm.io/#/select-query-builder/using-pagination
         const qb = getConnection()
             .getRepository(Post)
             .createQueryBuilder('p')
             .orderBy('"createdAt"', 'DESC')
-            .take(realLimit);
+            .take(realLimitPlusOne);
         if (cursor) {
             qb.where('"createdAt" < :cursor', {
                 cursor: new Date(parseInt(cursor)),
             });
         }
-        return qb.getMany(); // get executes the query so this happens only at the end
+
+        const posts = await qb.getMany();
+
+        return {
+            posts: posts.slice(0, realLimit),
+            hasMore: posts.length === realLimitPlusOne,
+        };
     }
     @Query(() => Post, { nullable: true })
     post(@Arg('id') id: number): Promise<Post | undefined> {

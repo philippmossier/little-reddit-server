@@ -11,6 +11,7 @@ import session from 'express-session';
 import connectRedis from 'connect-redis';
 import { COOKIE_NAME, __prod__ } from './constants';
 import cors from 'cors';
+import { Post } from './entities/Post';
 
 const main = async () => {
     // sendEmail('bob@bob.com', 'hello there');
@@ -27,8 +28,11 @@ const main = async () => {
 
     // you can use all typeorm methods on your connection like connection.migration etc
 
-    // // run migrations:
-    // await connection.runMigrations();
+    // run migrations:
+    await connection.runMigrations();
+
+    // delete all records of a specific table:
+    // await Post.delete({}); // same as sql `DELETE FROM post;`
 
     const app = express();
     const RedisStore = connectRedis(session);
