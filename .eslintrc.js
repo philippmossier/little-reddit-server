@@ -16,6 +16,7 @@ module.exports = {
         // error makes lines red , warning yelloww
         'prettier/prettier': ['warn'],
         '@typescript-eslint/explicit-module-boundary-types': 'off',
+        '@typescript-eslint/no-explicit-any': 'off',
         // 'prettier/prettier': ['warn', { endOfLine: 'auto', printWidth: 120 }],
     },
 };

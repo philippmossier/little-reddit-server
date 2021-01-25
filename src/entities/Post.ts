@@ -36,6 +36,7 @@ export class Post extends BaseEntity {
 
     // For relations we have to specify the type which we want connect to
     // in this case our Type is User
+    @Field()
     @ManyToOne(() => User, (user) => user.posts)
     // name of key effect the name of the foreign key, creator => creatorId
     // on the oder side of the relation we have to specify the opposite relation
