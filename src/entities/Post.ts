@@ -8,6 +8,7 @@ import {
     BaseEntity,
     ManyToOne,
 } from 'typeorm';
+import { Upvote } from './Upvote';
 import { User } from './User';
 
 @ObjectType()
@@ -28,6 +29,9 @@ export class Post extends BaseEntity {
     @Field()
     @Column({ type: 'int', default: 0 })
     points!: number;
+
+    @ManyToOne(() => Upvote, (upvote) => upvote.post)
+    upvotes: Upvote[];
 
     // we store that foreign key in a creatorId
     @Field()

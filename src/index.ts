@@ -11,7 +11,6 @@ import session from 'express-session';
 import connectRedis from 'connect-redis';
 import { COOKIE_NAME, __prod__ } from './constants';
 import cors from 'cors';
-import { Post } from './entities/Post';
 
 const main = async () => {
     // sendEmail('bob@bob.com', 'hello there');

@@ -40,6 +40,45 @@ export class PostResolver {
         return post.text.slice(0, 50);
     }
 
+    @Mutation(() => Boolean)
+    @UseMiddleware(isAuth)
+    async vote(
+        @Arg('postId', () => Int) postId: number,
+        @Arg('value', () => Int) value: number,
+        @Ctx() { req }: MyContext,
+    ) {
+        const isUpvote = value !== -1;
+        const realValue = isUpvote ? 1 : -1;
+        const { userId } = req.session;
+
+        /* Insert was seperate from update but its better to
+            put this into our update post query to just have one query.
+            The idea behind combining is if one of the queries fail, both fail!
+
+        await Upvote.insert({
+            userId,
+            postId,
+             value: realValue,
+        }); */
+
+        await getConnection().query(
+            `
+        START TRANSACTION;
+
+        insert into upvote ("userId", "postId", value)
+        values (${userId},${postId},${realValue});
+
+        update post
+        set points = points + ${realValue}
+        where id = ${postId};
+
+        COMMIT;
+        `,
+        );
+
+        return true;
+    }
+
     @Query(() => PaginatedPosts)
     async posts(
         @Arg('limit', () => Int) limit: number,
@@ -98,7 +137,7 @@ export class PostResolver {
         // }
         // const posts = await qb.getMany();
 
-        console.log('---------------- POSTS -----------------', posts);
+        // console.log('---------------- POSTS -----------------', posts);
         return {
             posts: posts.slice(0, realLimit),
             hasMore: posts.length === realLimitPlusOne,
