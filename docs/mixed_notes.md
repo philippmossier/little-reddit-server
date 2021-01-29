@@ -1,5 +1,8 @@
 # Workflow 💻
 
+09:11 stopped at adding upVOte frontend
+todo warning for post query missing id
+
 ## Backend
 
 **Step 1**

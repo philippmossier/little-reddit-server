@@ -47,6 +47,7 @@ npm run dev
 [] update to react 17 in frontend
 [] automate project setup with docker
 [] make this app more secure (maybe with JWT)
+[] compare stack with REST API (node,go,rust)
 
 ## nodejs scripts explanation
 
