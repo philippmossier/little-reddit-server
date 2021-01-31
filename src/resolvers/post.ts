@@ -16,6 +16,7 @@ import {
 } from 'type-graphql';
 import { Post } from '../entities/Post';
 import { getConnection } from 'typeorm';
+import { Upvote } from '../entities/Upvote';
 
 @InputType()
 class PostInput {
@@ -51,31 +52,52 @@ export class PostResolver {
         const realValue = isUpvote ? 1 : -1;
         const { userId } = req.session;
 
-        /* Insert was seperate from update but its better to
-            put this into our update post query to just have one query.
-            The idea behind combining is if one of the queries fail, both fail!
+        const upvote = await Upvote.findOne({ where: { postId, userId } });
 
-        await Upvote.insert({
-            userId,
-            postId,
-             value: realValue,
-        }); */
+        // user has voted on the post before and they are changing their vote
+        if (upvote && upvote.value !== realValue) {
+            await getConnection().transaction(async (tm) => {
+                // seperate into 2 queries, if one fails, automaticly both fail, because they are both in one transaction
+                await tm.query(
+                    `
+                update upvote
+                set value = $1
+                where "postId" = $2 and "userId" = $3
+                `,
+                    [realValue, postId, userId],
+                );
 
-        await getConnection().query(
-            `
-        START TRANSACTION;
-
-        insert into upvote ("userId", "postId", value)
-        values (${userId},${postId},${realValue});
-
-        update post
-        set points = points + ${realValue}
-        where id = ${postId};
-
-        COMMIT;
-        `,
-        );
-
+                // 2 * realValue because we want to change the points by 2 when changing a upvote to an downVote
+                // points: 3 to => points: 1 (because -1 for reverting upvote and -1 for setting downvote)
+                await tm.query(
+                    `
+                update post
+                set points = points + $1
+                where id = $2
+                `,
+                    [2 * realValue, postId],
+                );
+            });
+        } else if (!upvote) {
+            // has never voted before
+            await getConnection().transaction(async (tm) => {
+                await tm.query(
+                    `
+                    insert into upvote ("userId", "postId", value)
+                    values ($1,$2,$3)
+                    `,
+                    [userId, postId, realValue],
+                );
+                await tm.query(
+                    `
+                    update post
+                    set points = points + $1
+                    where id = $2
+                    `,
+                    [realValue, postId],
+                );
+            });
+        }
         return true;
     }
 
