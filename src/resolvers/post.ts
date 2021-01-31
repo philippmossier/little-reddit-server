@@ -105,17 +105,23 @@ export class PostResolver {
     async posts(
         @Arg('limit', () => Int) limit: number,
         @Arg('cursor', () => String, { nullable: true }) cursor: string | null,
+        @Ctx() { req }: MyContext,
     ): Promise<PaginatedPosts> {
         // pagination "load more button" logic: (Load more button is only visible if there are unfetched posts in the database)
         // user requests 20 posts but we fetch 21, so we always know if there are more posts which the user has not fetched yet
         const realLimit = Math.min(50, limit);
         const realLimitPlusOne = realLimit + 1;
-        // take is the same as limit but less error-prone in complex queries, source: https://typeorm.io/#/select-query-builder/using-pagination
 
-        // SQL version:
         const replacements: any[] = [realLimitPlusOne];
+
+        if (req.session.userId) {
+            replacements.push(req.session.userId);
+        }
+
+        let cursorIdx = 3;
         if (cursor) {
             replacements.push(new Date(parseInt(cursor)));
+            cursorIdx = replacements.length;
         }
 
         // postgreSQL can load multiple schemas in one DB and user is a reserved word so we
@@ -135,31 +141,21 @@ export class PostResolver {
             'email', u.email,
             'createdAt', u."createdAt",
             'updatedAt', u."updatedAt"
-        ) creator
+        ) creator,
+        ${
+            req.session.userId
+                ? '(select value from upvote where "userId" = $2 and "postId" = p.id) "voteStatus"'
+                : 'null as "voteStatus"'
+        }
         from post p
         inner join public.user u on u.id = p."creatorId"
-        ${cursor ? `where p."createdAt" < $2` : ''}
+        ${cursor ? `where p."createdAt" < $${cursorIdx}` : ''}
         order by p."createdAt" DESC
         limit $1
         `,
             replacements,
         );
 
-        // // query builder version (does not work so we can just write plain SQL):
-        // const qb = getConnection()
-        //     .getRepository(Post)
-        //     .createQueryBuilder('p')
-        //     .innerJoinAndSelect('p.creator', 'u', 'u.id = p."creatorId"')
-        //     .orderBy('p."createdAt"', 'DESC')
-        //     .take(realLimitPlusOne);
-        // if (cursor) {
-        //     qb.where('p."createdAt" < :cursor', {
-        //         cursor: new Date(parseInt(cursor)),
-        //     });
-        // }
-        // const posts = await qb.getMany();
-
-        // console.log('---------------- POSTS -----------------', posts);
         return {
             posts: posts.slice(0, realLimit),
             hasMore: posts.length === realLimitPlusOne,

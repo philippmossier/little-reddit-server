@@ -1,4 +1,4 @@
-import { ObjectType, Field } from 'type-graphql';
+import { ObjectType, Field, Int } from 'type-graphql';
 import {
     Entity,
     Column,
@@ -29,6 +29,10 @@ export class Post extends BaseEntity {
     @Field()
     @Column({ type: 'int', default: 0 })
     points!: number;
+
+    // only a graphQL schema value so we declare no column here
+    @Field(() => Int, { nullable: true })
+    voteStatus: number | null; // 1 or -1 | null
 
     @ManyToOne(() => Upvote, (upvote) => upvote.post)
     upvotes: Upvote[];
