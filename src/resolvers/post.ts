@@ -163,7 +163,8 @@ export class PostResolver {
     }
     @Query(() => Post, { nullable: true })
     post(@Arg('id', () => Int) id: number): Promise<Post | undefined> {
-        return Post.findOne(id);
+        // for simple relations we can use typeorms-relations, for advanced queries like above its better to write rawSQL
+        return Post.findOne(id, { relations: ['creator'] });
     }
 
     @Mutation(() => Post)
