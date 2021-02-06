@@ -29,5 +29,10 @@ export class Upvote extends BaseEntity {
 
     // @Field(()=> Post)
     @ManyToOne(() => Post, (post) => post.upvotes)
+
+    // // cascade delete: when a post gets deleted this gets deleted too
+    // @ManyToOne(() => Post, (post) => post.upvotes, {
+    //     onDelete: 'CASCADE',
+    // })
     post: Post;
 }
