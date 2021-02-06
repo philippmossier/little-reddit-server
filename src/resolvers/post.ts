@@ -41,6 +41,11 @@ export class PostResolver {
         return post.text.slice(0, 50);
     }
 
+    @FieldResolver(() => String)
+    creator(@Root() post: Post, @Ctx() { userLoader }: MyContext) {
+        return userLoader.load(post.creatorId);
+    }
+
     @Mutation(() => Boolean)
     @UseMiddleware(isAuth)
     async vote(
@@ -107,8 +112,8 @@ export class PostResolver {
         @Arg('cursor', () => String, { nullable: true }) cursor: string | null,
         @Ctx() { req }: MyContext,
     ): Promise<PaginatedPosts> {
-        // pagination "load more button" logic: (Load more button is only visible if there are unfetched posts in the database)
-        // user requests 20 posts but we fetch 21, so we always know if there are more posts which the user has not fetched yet
+        // Load more button is only visible if there are unfetched posts in the database.
+        // User requests 20 posts but we fetch 21, so we always know if there are more posts which the user has not fetched yet
         const realLimit = Math.min(50, limit);
         const realLimitPlusOne = realLimit + 1;
 
@@ -123,32 +128,15 @@ export class PostResolver {
             replacements.push(new Date(parseInt(cursor)));
             cursorIdx = replacements.length;
         }
-
-        // postgreSQL can load multiple schemas in one DB and user is a reserved word so we
-        // have to specify which user table (from wich schema we want to select the user like public.user)
-
-        // Why json_build_object ?
-        // We need to change the shape of the data here, because our graphQL Posts query
-        // expects a creator object like this: creator: {username: "dede", email: "dede@gmail.com"}
-        // SQL gives us every creator fields on top level so we have to build this nested creator object on our own
-
         const posts = await getConnection().query(
             `
         select p.*, 
-        json_build_object(
-            'id', u.id,
-            'username', u.username,
-            'email', u.email,
-            'createdAt', u."createdAt",
-            'updatedAt', u."updatedAt"
-        ) creator,
         ${
             req.session.userId
                 ? '(select value from upvote where "userId" = $2 and "postId" = p.id) "voteStatus"'
                 : 'null as "voteStatus"'
         }
         from post p
-        inner join public.user u on u.id = p."creatorId"
         ${cursor ? `where p."createdAt" < $${cursorIdx}` : ''}
         order by p."createdAt" DESC
         limit $1
@@ -161,10 +149,10 @@ export class PostResolver {
             hasMore: posts.length === realLimitPlusOne,
         };
     }
+
     @Query(() => Post, { nullable: true })
     post(@Arg('id', () => Int) id: number): Promise<Post | undefined> {
-        // for simple relations we can use typeorms-relations, for advanced queries like above its better to write rawSQL
-        return Post.findOne(id, { relations: ['creator'] });
+        return Post.findOne(id);
     }
 
     @Mutation(() => Post)
@@ -173,7 +161,6 @@ export class PostResolver {
         @Arg('input') input: PostInput,
         @Ctx() { req }: MyContext,
     ): Promise<Post> {
-        // FIXED with latest typeorm update: uses 2 sql queries (1 to select 1 to insert) not ideal but this is easier
         return Post.create({
             ...input,
             creatorId: req.session.userId, // We know who the user is based on their session so we pass their id
@@ -209,7 +196,7 @@ export class PostResolver {
         @Arg('id', () => Int) id: number,
         @Ctx() { req }: MyContext,
     ): Promise<boolean> {
-        // Not cascade way (you need to filter out null values in frontend because post gets set to null at deletion)
+        // Not cascade way of deleting Upvotes after Post deletion (you need to filter out null values in frontend because post gets set to null at deletion)
         const post = await Post.findOne(id);
         if (!post) {
             return false;

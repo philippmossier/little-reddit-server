@@ -11,6 +11,7 @@ import session from 'express-session';
 import connectRedis from 'connect-redis';
 import { COOKIE_NAME, __prod__ } from './constants';
 import cors from 'cors';
+import { createUserLoader } from './utils/createUserLoader';
 
 const main = async () => {
     // sendEmail('bob@bob.com', 'hello there');
@@ -66,7 +67,12 @@ const main = async () => {
             resolvers: [HelloResolver, PostResolver, UserResolver],
             validate: false,
         }),
-        context: ({ req, res }) => ({ req, res, redis }),
+        context: ({ req, res }) => ({
+            req,
+            res,
+            redis,
+            userLoader: createUserLoader(),
+        }),
     });
     apolloServer.applyMiddleware({ app, cors: false });
     app.listen(4000, () => {
