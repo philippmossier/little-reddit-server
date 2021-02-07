@@ -2,3 +2,4 @@
 /dist
 /src/migrations
 /dumb.rdb
+.env

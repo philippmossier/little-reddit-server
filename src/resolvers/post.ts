@@ -125,7 +125,6 @@ export class PostResolver {
     async posts(
         @Arg('limit', () => Int) limit: number,
         @Arg('cursor', () => String, { nullable: true }) cursor: string | null,
-        @Ctx() { req }: MyContext,
     ): Promise<PaginatedPosts> {
         // Load more button is only visible if there are unfetched posts in the database.
         // User requests 20 posts but we fetch 21, so we always know if there are more posts which the user has not fetched yet

@@ -1,4 +1,5 @@
 import 'reflect-metadata';
+import 'dotenv-safe/config';
 import express from 'express';
 import { ApolloServer } from 'apollo-server-express';
 import { buildSchema } from 'type-graphql';
@@ -13,10 +14,20 @@ import { COOKIE_NAME, __prod__ } from './constants';
 import cors from 'cors';
 import { createUserLoader } from './utils/createUserLoader';
 import { createUpvoteLoader } from './utils/createUpvoteLoader';
+import { Post } from './entities/Post';
+import { User } from './entities/User';
+import { Upvote } from './entities/Upvote';
+import path from 'path';
 
 const main = async () => {
-    // sendEmail('bob@bob.com', 'hello there');
-    const connection = await createConnection();
+    const connection = await createConnection({
+        type: 'postgres',
+        url: process.env.DATABASE_URL,
+        logging: true,
+        // synchronize: true,
+        migrations: [path.join(__dirname, './migrations/*')],
+        entities: [Post, User, Upvote],
+    });
     connection && console.log('connected to PostgreSQL-DB ');
     // await Post.delete({}); // deletes all items from post table
 
@@ -37,10 +48,11 @@ const main = async () => {
 
     const app = express();
     const RedisStore = connectRedis(session);
-    const redis = new Redis();
+    const redis = new Redis(process.env.REDIS_URL);
+    __prod__ && app.set('trust proxy', 1);
     app.use(
         cors({
-            origin: 'http://localhost:3000',
+            origin: process.env.CORS_ORIGIN,
             credentials: true,
         }),
     );
@@ -56,9 +68,10 @@ const main = async () => {
                 httpOnly: true,
                 sameSite: 'lax', // csrf
                 secure: __prod__, // cookie only works in https (only set this to true when using https in prod)
+                // domain: __prod__ ? '.insertDomainNameHere.com' : undefined, // try this when having cookie problems
             },
             saveUninitialized: false,
-            secret: 'werfdsfasdwengfhsfareadffdtgg', // changed to random string
+            secret: process.env.SESSION_SECRET, // changed to random string
             resave: false,
         }),
     );
@@ -77,7 +90,7 @@ const main = async () => {
         }),
     });
     apolloServer.applyMiddleware({ app, cors: false });
-    app.listen(4000, () => {
+    app.listen(parseInt(process.env.PORT), () => {
         console.log('apollo-graphql server started on localhost:4000/graphql');
     });
 };

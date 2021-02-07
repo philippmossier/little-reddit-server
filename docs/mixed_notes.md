@@ -58,7 +58,7 @@ DELETE FROM "user" WHERE username!='Philipp'; (deletes every user except me)
 
 🕮 Migration and DB-Table Actions can also  be run in index.ts with:
 
-```typescript
+```typescript index.ts
     // run migrations:
     await connection.runMigrations();
 
@@ -80,6 +80,26 @@ DROP DATABASE littlereddit;   or drop database littlereddit;
 
 INFO: "synchronize": true, => automatically creates the DB tables for you without running migrations (set this to false if you manually use migrations to create a table)
 
+## ormconfig.json
+
+is not used in production
+is only used for development
+
+Protip: create a initial migration to create all tables for an empty DB.
+To do that just do these steps:
+
+1. create a new postgresDB with `createdb dbname`
+2. edit orm config and put in the new DB name like `"database": "littlereddit4",`
+3. run typeorm cli command `npx typeorm migration:generate -n Initial`
+
+**For production SETUP:**
+
+1. Make sure that you have the Inital Migration for the production DB
+2. Optional also make a second migration for dummy posts after creating the Initial Migration
+    (so the timestamp is  right and Inital migration runs before)
+3. make sure to add this line `await connection.runMigrations();` to the index.ts file,
+    so migrations run after the DB gets connected
+
 ## typorm migrations
 
 <https://github.com/typeorm/typeorm/blob/master/docs/migrations.md>
@@ -95,7 +115,7 @@ Run your custom migration with:
     await connection.runMigrations();
 ```
 
-- generates a new migrations, depending on the current entities (only if changed since the last migration run):
+- generates all missing migrations, depending on the current entities (only if changed since the last migration run):
 npm run typeorm migration:generate -- -n UserMigration2
 
 - runs all missing migration (mostly the last one with the newest timestamp):
