@@ -12,6 +12,7 @@ import connectRedis from 'connect-redis';
 import { COOKIE_NAME, __prod__ } from './constants';
 import cors from 'cors';
 import { createUserLoader } from './utils/createUserLoader';
+import { createUpvoteLoader } from './utils/createUpvoteLoader';
 
 const main = async () => {
     // sendEmail('bob@bob.com', 'hello there');
@@ -72,6 +73,7 @@ const main = async () => {
             res,
             redis,
             userLoader: createUserLoader(),
+            upvoteLoader: createUpvoteLoader(),
         }),
     });
     apolloServer.applyMiddleware({ app, cors: false });

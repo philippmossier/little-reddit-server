@@ -5,12 +5,14 @@
 * When fetching a post we also want some informations of the user who created the post (User-Entity)
 * Post <-> User
 
-**The easy Way:**
+## ------------------------ The easy Way ------------------------
+
 Create a FieldResolver for the creator on the post resolver (easy way)
 
 ```typescript
 @Resolver(Post)
 export class PostResolver {
+    
     @FieldResolver(() => String)
     creator(@Root() post: Post) {
         return User.findOne(post.creatorId);
@@ -21,7 +23,78 @@ export class PostResolver {
 
 * Without a dataLoader we are very inefficeiend because we fetch 20 posts we have 21 sql-queries. 1 query for for our posts query and 20 sql-queries for fetching the creators of each post*
 
-**The raw sql way:**
+## ------------------------ The good way ------------------------
+
+** With dataloader like createUserLoader and createVoteStatusLoader we can solve the multiple sql query issue
+
+```typescript
+import DataLoader from 'dataloader';
+import { User } from '../entities/User';
+
+// keys: [1, 7, 8, 14]
+// values: [{id:1, username: tim}, {}, {}, {} ]
+export const createUserLoader = () =>
+    new DataLoader<number, User>(async (userIds) => {
+        const users = await User.findByIds(userIds as number[]);
+        const userIdToUser: Record<number, User> = {};
+        users.forEach((u) => {
+            userIdToUser[u.id] = u;
+        });
+        return userIds.map((userId) => userIdToUser[userId]);
+    });
+```
+
+```typescript
+@Resolver(Post)
+export class PostResolver {
+
+@FieldResolver(() => Int, { nullable: true })
+    async voteStatus(
+        @Root() post: Post,
+        @Ctx() { upvoteLoader, req }: MyContext,
+    ) {
+        if (!req.session.userId) {
+            return null;
+        }
+        const upvote = await upvoteLoader.load({
+            postId: post.id,
+            userId: req.session.userId,
+        });
+        return upvote ? upvote.value : null;
+    }
+}
+```
+
+```typescript
+const apolloServer = new ApolloServer({
+        schema: await buildSchema({
+            resolvers: [HelloResolver, PostResolver, UserResolver],
+            validate: false,
+        }),
+        context: ({ req, res }) => ({
+            req,
+            res,
+            redis,
+            userLoader: createUserLoader(),
+            upvoteLoader: createUpvoteLoader(),
+        }),
+    });
+```
+
+```typescript
+export type MyContext = {
+    req: Request & { session: Express.Session };
+    redis: Redis;
+    res: Response;
+    userLoader: ReturnType<typeof createUserLoader>;
+    upvoteLoader: ReturnType<typeof createUpvoteLoader>;
+};
+
+```
+
+NOTE: *In an real application we normaly use both, dataloader and raw sql*
+
+## ----------------- Also good but raw sql way ----------------
 
 * Fetch relations with `json_build_object and inner join` or `typeorm-relations`
 * We can achieve that with `json_build_object and inner join` or `typeorm-relations`
