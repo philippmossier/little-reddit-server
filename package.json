@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "compile": "tsc",
     "watch": "tsc -w",
     "dev": "concurrently --kill-others \"npm run watch\" \"npm run dev1\"",
     "dev1": "nodemon dist/index.js",

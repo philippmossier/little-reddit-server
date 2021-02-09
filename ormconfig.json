@@ -4,7 +4,7 @@
     "port": 5432,
     "username": "phil",
     "password": "phil",
-    "database": "littlereddit",
+    "database": "littlereddit2",
     "entities": ["dist/entities/*.js"],
     "migrations": ["dist/migrations/*.js"],
     "synchronize": true,
