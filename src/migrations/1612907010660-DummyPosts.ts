@@ -1,11 +1,15 @@
+/* eslint-disable */ 
 import { MigrationInterface, QueryRunner } from 'typeorm';
+import argon2 from 'argon2';
 
 export class DummyPosts1612907010660 implements MigrationInterface {
     public async up(queryRunner: QueryRunner): Promise<void> {
+        const hashedPasswordForDummyUser = await argon2.hash('bob');
+
         await queryRunner.query(`
 insert into "user"("username", "password", "email", "createdAt", "updatedAt", "upvotesUserId", "upvotesPostId") 
 values (
-        'bob', 'bob', 'bob@gmail.com', DEFAULT, DEFAULT, DEFAULT, DEFAULT
+        'bob', '${hashedPasswordForDummyUser}', 'bob@gmail.com', DEFAULT, DEFAULT, DEFAULT, DEFAULT
         );        
 insert into post (title, text, "creatorId", "createdAt")
 values (
@@ -889,6 +893,6 @@ values (
         );
         `);
     }
-
-    public async down(_: QueryRunner): Promise<void> {}
+    public async down(_: QueryRunner): Promise<void> {
+    }
 }
