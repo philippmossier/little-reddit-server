@@ -1,4 +1,24 @@
-# How to run this APP
+# GraphQL API for little reddit clone
+
+### Main Goals for the project:
+
+- Write Resolvers and Entities on my own, instead of using a GraphQL-Service like Hasura.
+- Use the code-first/active-record approach. (TypeORM, type-graphql).
+- Stay flexible how to comminicate with PostgreSQL, using raw SQL or typeORM-queryBuilder. 
+- Write authentication on my own.
+- Use redis for sessions.
+- Sync all resolvers and entity types with the frontend app.
+- Set up a password reset mailer (nodemailer)
+
+
+### Stack i used: 
+
+- Typescript
+- TypeORM
+- type-graphql
+- redis
+- express
+- apollo-server-express
 
 1. check versions:
 postgreSQL: 13 
