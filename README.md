@@ -22,7 +22,7 @@
 
 ---
 
-Addional notes are in the docs folder
+💡 Addional notes are in the docs folder
 
 # How to start this server: 
 
