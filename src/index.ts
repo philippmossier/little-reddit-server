@@ -24,27 +24,13 @@ const main = async () => {
         type: 'postgres',
         url: process.env.DATABASE_URL,
         logging: true,
-        // synchronize: true,
+        // synchronize: true, // only for dev mode, so migrations run outomatically
         migrations: [path.join(__dirname, './migrations/*')],
         entities: [Post, User, Upvote],
     });
     connection && console.log('connected to PostgreSQL-DB ');
-    // await Post.delete({}); // deletes all items from post table
 
-    // // ---- create new record on Post table
-    // const db_init = await createConnection();
-    // const repository = await db_init.getRepository(Post);
-    // let post = new Post;
-    // post.title = "created without resolver
-    // await repository.save(post)
-
-    // you can use all typeorm methods on your connection like connection.migration etc
-
-    // run migrations:
     await connection.runMigrations();
-
-    // delete all records of a specific table:
-    // await Post.delete({}); // same as sql `DELETE FROM post;`
 
     const app = express();
     const RedisStore = connectRedis(session);
