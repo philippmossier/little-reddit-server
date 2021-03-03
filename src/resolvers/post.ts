@@ -88,7 +88,6 @@ export class PostResolver {
                 );
 
                 // 2 * realValue because we want to change the points by 2 when changing a upvote to an downVote
-                // points: 3 to => points: 1 (because -1 for reverting upvote and -1 for setting downvote)
                 await tm.query(
                     `
                 update post
@@ -199,7 +198,7 @@ export class PostResolver {
         @Arg('id', () => Int) id: number,
         @Ctx() { req }: MyContext,
     ): Promise<boolean> {
-        // Not cascade way of deleting Upvotes after Post deletion (you need to filter out null values in frontend because post gets set to null at deletion)
+        // Solution without cascade deleting Upvotes relation (you need to filter out null values in frontend because post gets set to null at deletion)
         const post = await Post.findOne(id);
         if (!post) {
             return false;
