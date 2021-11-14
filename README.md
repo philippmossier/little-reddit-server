@@ -47,4 +47,3 @@ https://stackoverflow.com/questions/1471571/how-to-configure-postgresql-for-the-
 6. run little-reddit-web
 	`cd little-reddit-web`
 	`npm run dev`
-
